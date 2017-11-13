@@ -3,22 +3,38 @@ package com.leocaliban.livraria.domain;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@Entity
 public class Livro {
 	@JsonInclude(Include.NON_NULL)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idLivro;
+	
 	@JsonInclude(Include.NON_NULL)
 	private String nome;
+	
 	@JsonInclude(Include.NON_NULL)
 	private Date dataPublicacao;
+	
 	@JsonInclude(Include.NON_NULL)
 	private String editora;
+	
 	@JsonInclude(Include.NON_NULL)
 	private String resumo;
+	
 	@JsonInclude(Include.NON_NULL)
+	@Transient
 	private List<Comentario> comentarios;
+	
 	@JsonInclude(Include.NON_NULL)
 	private String autor;
 	
