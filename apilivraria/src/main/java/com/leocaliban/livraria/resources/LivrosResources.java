@@ -16,22 +16,24 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.leocaliban.livraria.domain.Livro;
 import com.leocaliban.livraria.repository.LivrosRepository;
+import com.leocaliban.livraria.service.LivrosService;
+import com.leocaliban.livraria.service.exceptions.LivroNaoEncontradoException;
 
 @RestController
 @RequestMapping("/livros")
 public class LivrosResources {
 	@Autowired
-	private LivrosRepository livroRepository;
+	private LivrosService livrosService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Livro>> listar() {
-		return ResponseEntity.status(HttpStatus.OK).body(livroRepository.findAll());
+		return ResponseEntity.status(HttpStatus.OK).body(livrosService.listar());
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@RequestBody Livro livro) {
 		//tratando o retorno http quando o conteúdo é salvo
-		livro = livroRepository.save(livro);
+		livro = livrosService.salvar(livro);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(livro.getIdLivro()).toUri();
 		return ResponseEntity.created(uri).build();
@@ -39,9 +41,11 @@ public class LivrosResources {
 	
 	@RequestMapping(value = "/{id}",method = RequestMethod.GET)
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
-		Livro livro = livroRepository.findOne(id);
-		//tratando o retorno http quando o conteúdo da requisição não existe
-		if(livro == null) {
+		Livro livro = null;
+		try {
+			livro = livrosService.buscar(id);
+		}
+		catch(LivroNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(livro);
@@ -50,9 +54,9 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
 	public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
 		try {
-			livroRepository.delete(id);			
+			livrosService.deletar(id);			
 		}
-		catch(EmptyResultDataAccessException e) {
+		catch(LivroNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.noContent().build();
@@ -61,7 +65,12 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}",method = RequestMethod.PUT)
 	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("id") Long id) {
 		livro.setIdLivro(id);
-		livroRepository.save(livro);
+		try {
+		livrosService.atualizar(livro);
+		}
+		catch(LivroNaoEncontradoException e) {
+			return ResponseEntity.notFound().build();
+		}
 		return ResponseEntity.noContent().build();
 	}
 }
