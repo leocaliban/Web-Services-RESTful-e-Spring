@@ -63,8 +63,11 @@ public class LivrosResources {
 		livrosService.salvarComentario(livroId, comentario);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		return ResponseEntity.created(uri).build();
-		
 	}
 	
-	
+	@RequestMapping(value = "/{id}/comentarios", method = RequestMethod.GET)
+	public ResponseEntity<List<Comentario>> listarComentarios(@PathVariable("id")Long idLivro){
+		List<Comentario> comentarios = livrosService.listarComentarios(idLivro);
+		return ResponseEntity.status(HttpStatus.OK).body(comentarios);
+	}
 }

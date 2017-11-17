@@ -59,11 +59,14 @@ public class LivrosService {
 	
 	public Comentario salvarComentario(Long idLivro, Comentario comentario) {
 		Livro livro = buscar(idLivro);
-		
 		comentario.setLivro(livro);
 		comentario.setDataComentario(new Date());
 		
 		return comentarioRepository.save(comentario);
-		
+	}
+	
+	public List<Comentario> listarComentarios(Long idLivro){
+		Livro livro = buscar(idLivro);
+		return livro.getComentarios();
 	}
 }
