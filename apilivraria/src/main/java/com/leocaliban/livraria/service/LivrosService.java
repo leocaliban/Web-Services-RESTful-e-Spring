@@ -1,12 +1,15 @@
 package com.leocaliban.livraria.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.leocaliban.livraria.domain.Comentario;
 import com.leocaliban.livraria.domain.Livro;
+import com.leocaliban.livraria.repository.ComentariosRepository;
 import com.leocaliban.livraria.repository.LivrosRepository;
 import com.leocaliban.livraria.service.exceptions.LivroNaoEncontradoException;
 
@@ -15,6 +18,8 @@ public class LivrosService {
 
 	@Autowired
 	private LivrosRepository livroRepository;
+	@Autowired
+	private ComentariosRepository comentarioRepository;
 	
 	public List<Livro> listar(){
 		return livroRepository.findAll();
@@ -49,5 +54,16 @@ public class LivrosService {
 	
 	private void verificarExistencia(Livro livro) {
 		buscar(livro.getIdLivro());
+	}
+	
+	
+	public Comentario salvarComentario(Long idLivro, Comentario comentario) {
+		Livro livro = buscar(idLivro);
+		
+		comentario.setLivro(livro);
+		comentario.setDataComentario(new Date());
+		
+		return comentarioRepository.save(comentario);
+		
 	}
 }
