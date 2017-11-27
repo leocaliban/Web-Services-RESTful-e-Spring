@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,8 +25,11 @@ public class Comentario {
 	@JsonInclude(Include.NON_NULL)
 	private Long idComentario;
 	
+	@NotEmpty(message = "O campo comentário não pode ser vazio.")
+	@Size(max = 1500, message = "O Comentário deve conter menos de 1500 caracteres.")
 	@JsonInclude(Include.NON_NULL)
 	private String texto;
+	
 	
 	@JsonInclude(Include.NON_NULL)
 	private String usuario;
