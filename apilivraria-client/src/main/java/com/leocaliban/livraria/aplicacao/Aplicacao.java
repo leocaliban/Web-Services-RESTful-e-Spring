@@ -1,24 +1,31 @@
 package com.leocaliban.livraria.aplicacao;
 
-import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import com.leocaliban.livraria.client.LivrosClient;
+import com.leocaliban.livraria.client.domain.Livro;
 
 public class Aplicacao {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
-		RestTemplate restTemplate = new RestTemplate();
+		LivrosClient client = new LivrosClient();
+		List<Livro> listaLivros = client.listar();
 		
-		RequestEntity<Void> request = RequestEntity.get(URI.create("http://localhost:8080/livros"))
-				.header("Authorization", "Basic dXN1YXJpbzoxMjM=").build();
-		
-		ResponseEntity<Livro[]>response = restTemplate.exchange(request, Livro[].class);
-		
-		for (Livro livro : response.getBody()) {
+		for (Livro livro : listaLivros) {
 			System.out.println("Livro: " + livro.getNome());
 		}
+		
+		Livro livro = new Livro();
+		livro.setNome("TESTE API");
+		livro.setEditora("Leocaliban");
+		SimpleDateFormat publicacao = new SimpleDateFormat("dd/MM/yyyy");
+		livro.setDataPublicacao(publicacao.parse("01/02/2013"));
+		livro.setResumo("Livro novo testando salvar na API");
+		
+		String localizacao = client.salvar(livro);
+		System.out.println("URI Do livro salvo: " + localizacao);
 	}
 }

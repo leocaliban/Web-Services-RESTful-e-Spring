@@ -1,4 +1,4 @@
-package com.leocaliban.livraria.aplicacao;
+package com.leocaliban.livraria.client.domain;
 
 public class DetalhesErro {
 

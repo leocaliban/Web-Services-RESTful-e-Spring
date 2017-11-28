@@ -1,4 +1,4 @@
-package com.leocaliban.livraria.aplicacao;
+package com.leocaliban.livraria.client.domain;
 
 import java.util.Date;
 import java.util.List;
